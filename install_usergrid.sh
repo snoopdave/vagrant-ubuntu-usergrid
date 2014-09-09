@@ -44,7 +44,7 @@ groovy config_usergrid.groovy > /usr/share/tomcat7/lib/usergrid-custom.propertie
 
 # configure Tomcat memory and and hook up Log4j because Usergrid uses it 
 cat >> /usr/share/tomcat7/bin/setenv.sh << EOF
-export JAVA_OPTS="-Xmx512m -Dlog4j.configuration=file://usr/share/tomcat7/lib/log4j.properties -Dlog4j.debug=false"
+export JAVA_OPTS="-Xmx512m -Dlog4j.configuration=file:///usr/share/tomcat7/lib/log4j.properties -Dlog4j.debug=false"
 EOF
 chmod +x /usr/share/tomcat7/bin/setenv.sh
 cp usergrid/stack/rest/src/test/resources/log4j.properties /usr/share/tomcat7/lib/

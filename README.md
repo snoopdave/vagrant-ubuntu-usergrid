@@ -19,9 +19,9 @@ configures Usergrid 1.0 Stack and Portal to run on Tomcat.
 Once the VM launches you should be able to:
 
 1. Go to [http://10.1.1.161:8080/system/database/setup](http://10.1.1.161:8080/system/database/setup)
-2. Login as superuser/test and the database will be setup
+2. Login as superuser/test and after you do, the database will be setup
 3. Go to [http://10.1.1.161:8080/system/superuser/setup](http://10.1.1.161:8080/system/superuser/setup) to setup the superuser 
-4. Go to [http://10.1.1.161:8080/portal](http://10.1.1.161:8080/portal) and login as superuser/test
+4. Go to [http://10.1.1.161:8080/portal](http://10.1.1.161:8080/portal) and login to the portal as superuser/test
 5. Enjoy Usergrid goodness!
 
 If there are problems, please let me know.
