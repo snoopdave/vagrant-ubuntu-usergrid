@@ -23,6 +23,7 @@ echo $1
 export PUBLIC_HOSTNAME=$1
 
 apt-get update
+chmod +x *.sh
 
 # install essential stuff
 apt-get -y install vim curl groovy
@@ -45,4 +46,5 @@ source /etc/profile.d/usergrid-env.sh
 
 pushd /vagrant
 ./install_cassandra.sh
+./install_elasticsearch.sh
 ./install_usergrid.sh

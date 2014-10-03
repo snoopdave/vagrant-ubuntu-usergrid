@@ -25,24 +25,32 @@ apt-get -y update
 apt-get -y install tomcat7 unzip git maven nodejs python-software-properties python g++ make
 /etc/init.d/tomcat7 stop
 
-# this is necessary because the portal build still uses "node" in scripts
-ln -s /usr/bin/nodejs /usr/bin/node
-
 # fetch usergrid code in our home dir
 cd /home/vagrant
 git clone https://git-wip-us.apache.org/repos/asf/incubator-usergrid.git usergrid
+cd usergrid
+git checkout two-dot-o
 
-# build Usergrid stack, deploy it to Tomcat and then configure it
-cd usergrid/stack
-mvn -DskipTests=true install
+# build Usergrid Java SDK
+cd /home/vagrant/usergrid/sdks/java
+mvn clean install -DskipTests=true
+
+# build Usergrid stack
+cd /home/vagrant/usergrid/stack
+mvn -DskipTests=true clean install
+
+# deploy stack WAR to Tomcat
 cd rest/target
 rm -rf /var/lib/tomcat7/webapps/*
 cp -r ROOT.war /var/lib/tomcat7/webapps
 mkdir -p /usr/share/tomcat7/lib 
+
+# write Usergrid config
 cd /vagrant
-groovy config_usergrid.groovy > /usr/share/tomcat7/lib/usergrid-custom.properties 
+groovy config_usergrid.groovy > /usr/share/tomcat7/lib/usergrid-deployment.properties 
 
 # configure Tomcat memory and and hook up Log4j because Usergrid uses it 
+cd /home/vagrant
 cat >> /usr/share/tomcat7/bin/setenv.sh << EOF
 export JAVA_OPTS="-Xmx512m -Dlog4j.configuration=file:///usr/share/tomcat7/lib/log4j.properties -Dlog4j.debug=false"
 EOF
@@ -58,4 +66,4 @@ cp -r usergrid-portal/* /var/lib/tomcat7/webapps/portal
 sed -i.bak "s/https\:\/\/api.usergrid.com/http\:\/\/${PUBLIC_HOSTNAME}:8080/" /var/lib/tomcat7/webapps/portal/config.js 
 
 # go!
-/etc/init.d/tomcat7 start
+/etc/init.d/tomcat7 restart
