@@ -25,6 +25,10 @@ apt-get --force-yes -y install libcap2
 apt-get --force-yes -y install cassandra
 /etc/init.d/cassandra stop
 
+# Set Cassandra heap size to something small
+sed -i.bak "s/#MAX_HEAP_SIZE=\"4G\"/MAX_HEAP_SIZE=\"450m\"/" /etc/cassandra/cassandra-env.sh
+sed -i.bak "s/#HEAP_NEWSIZE=\"800M\"/HEAP_NEWSIZE=\"100m\"/" /etc/cassandra/cassandra-env.sh
+
 mkdir -p /mnt/data/cassandra
 chown cassandra /mnt/data/cassandra
 groovy config_cassandra.groovy > /etc/cassandra/cassandra.yaml

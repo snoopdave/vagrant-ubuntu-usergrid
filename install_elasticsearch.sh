@@ -26,7 +26,7 @@ apt-get update
 apt-get --force-yes -y install elasticsearch
 
 cat >> /etc/default/elasticsearch << EOF
-ES_HEAP_SIZE=300m
+ES_HEAP_SIZE=450m
 MAX_OPEN_FILES=65535
 MAX_LOCKED_MEMORY=unlimited
 EOF

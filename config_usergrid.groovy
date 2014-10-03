@@ -31,7 +31,9 @@ def usergridConfig = """
 cassandra.url=${hostName}:9160
 cassanrda.cluster=${clusterName}
 cassandra.keyspace.strategy.options.replication_factor=1
-cassandra.keyspace.strategy=org.apache.cassandra.locator.SimpleStrategy
+cassandra.keyspace.strategy=org.apache.cassandra.locator.SimpleStrategy\n\
+cassandra.timeout=5000
+cassandra.connections=50
 
 # These settings seem to cause problems at startup time
 #cassandra.keyspace.strategy=org.apache.cassandra.locator.NetworkTopologyStrategy
