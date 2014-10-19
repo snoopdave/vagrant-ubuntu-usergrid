@@ -35,6 +35,7 @@ git clone https://git-wip-us.apache.org/repos/asf/incubator-usergrid.git usergri
 # build Usergrid stack, deploy it to Tomcat and then configure it
 cd usergrid/stack
 mvn -DskipTests=true install
+cp rest/src/test/resources/log4j.properties /usr/share/tomcat7/lib/
 cd rest/target
 rm -rf /var/lib/tomcat7/webapps/*
 cp -r ROOT.war /var/lib/tomcat7/webapps
