@@ -16,10 +16,6 @@
 #
 #-------------------------------------------------------------------------------
 
-if [ "$#" -ne 3 ]; then
-    echo "Must specify IP address, a list of DB servers IPs and the Cassandra replication factor"
-fi
-echo $1
 export PUBLIC_HOSTNAME=$1
 
 apt-get update

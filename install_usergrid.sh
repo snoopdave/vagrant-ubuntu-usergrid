@@ -30,10 +30,11 @@ ln -s /usr/bin/nodejs /usr/bin/node
 
 # fetch usergrid code in our home dir
 cd /home/vagrant
-git clone https://git-wip-us.apache.org/repos/asf/incubator-usergrid.git usergrid
+git clone https://git-wip-us.apache.org/repos/asf/usergrid.git usergrid
 
 # build Usergrid stack, deploy it to Tomcat and then configure it
 cd usergrid/stack
+git checkout 1.x
 mvn -DskipTests=true install
 cp rest/src/test/resources/log4j.properties /usr/share/tomcat7/lib/
 cd rest/target
@@ -51,12 +52,21 @@ chmod +x /usr/share/tomcat7/bin/setenv.sh
 cp usergrid/stack/rest/src/test/resources/log4j.properties /usr/share/tomcat7/lib/
 
 # build and deploy Usergrid Portal to Tomcat
+npm install karma-phantomjs-launcher --save-dev
+
 cd /home/vagrant/usergrid/portal
 ./build.sh 
 cd dist
 mkdir /var/lib/tomcat7/webapps/portal
 cp -r usergrid-portal/* /var/lib/tomcat7/webapps/portal
-sed -i.bak "s/https\:\/\/api.usergrid.com/http\:\/\/${PUBLIC_HOSTNAME}:8080/" /var/lib/tomcat7/webapps/portal/config.js 
+sed -i.bak "s/https\:\/\/localhost/http\:\/\/${PUBLIC_HOSTNAME}:8080/" /var/lib/tomcat7/webapps/portal/config.js 
 
 # go!
 /etc/init.d/tomcat7 start
+
+sleep 10
+
+# init usergrid
+curl http://localhost:8080/system/database/setup -u superuser:test
+curl http://localhost:8080/system/superuser/setup -u superuser:test
+
