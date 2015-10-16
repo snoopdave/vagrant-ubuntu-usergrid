@@ -59,7 +59,7 @@ cd /home/vagrant/usergrid/portal
 cd dist
 mkdir /var/lib/tomcat7/webapps/portal
 cp -r usergrid-portal/* /var/lib/tomcat7/webapps/portal
-sed -i.bak "s/https\:\/\/localhost/http\:\/\/${PUBLIC_HOSTNAME}:8080/" /var/lib/tomcat7/webapps/portal/config.js 
+sed -i.bak "s/http\:\/\/localhost/http\:\/\/${PUBLIC_HOSTNAME}/" /var/lib/tomcat7/webapps/portal/config.js 
 
 # go!
 /etc/init.d/tomcat7 start
