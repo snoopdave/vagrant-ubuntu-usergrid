@@ -1,10 +1,11 @@
-# VagrantFile that launches a Usergrid 1.0 Virtual Machine 
+# VagrantFile that launches a Usergrid 1.x VM
 
 The VagrantFile in this directory starts a Virtual Machine (VM) that runs the 
 Usergrid Stack and Portal at [http://10.1.1.161:8080/portal](http://10.1.1.161:8080/portal) on your machine.
 
 It installs and starts Cassandra, installs and starts Tomcat, installs and 
 configures Usergrid 1.0 Stack and Portal to run on Tomcat. 
+Usergrid is built from source code from the Usergrid *1.x* branch.
 
 ## How to launch the VM
 
