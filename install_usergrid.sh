@@ -27,20 +27,21 @@ apt-get -y install tomcat7 unzip git maven nodejs python-software-properties pyt
 
 # fetch usergrid code in our home dir
 cd /home/vagrant
-git clone https://git-wip-us.apache.org/repos/asf/incubator-usergrid.git usergrid
-cd usergrid
-git checkout two-dot-o
+git clone https://git-wip-us.apache.org/repos/asf/usergrid.git usergrid
+export USERGRID_PROJECT=/home/vagrant/usergrid
 
-# build Usergrid Java SDK
-cd /home/vagrant/usergrid/sdks/java
-mvn clean install -DskipTests=true
+# build Usergrid stack, deploy it to Tomcat and then configure it
+cd ${USERGRID_PROJECT}
+git checkout master
 
-# build Usergrid stack
-cd /home/vagrant/usergrid/stack
-mvn -DskipTests=true clean install
+cd ${USERGRID_PROJECT}/sdks/java
+mvn -DskipTests=true install
 
-# deploy stack WAR to Tomcat
-cd rest/target
+cd ${USERGRID_PROJECT}/stack
+mvn -DskipTests=true install
+cp rest/src/test/resources/log4j.properties /usr/share/tomcat7/lib/
+
+cd ${USERGRID_PROJECT}/stack/rest/target
 rm -rf /var/lib/tomcat7/webapps/*
 cp -r ROOT.war /var/lib/tomcat7/webapps
 mkdir -p /usr/share/tomcat7/lib 
@@ -55,15 +56,24 @@ cat >> /usr/share/tomcat7/bin/setenv.sh << EOF
 export JAVA_OPTS="-Xmx450m -Dlog4j.configuration=file:///usr/share/tomcat7/lib/log4j.properties -Dlog4j.debug=false"
 EOF
 chmod +x /usr/share/tomcat7/bin/setenv.sh
-cp usergrid/stack/rest/src/test/resources/log4j.properties /usr/share/tomcat7/lib/
+cp ${USERGRID_PROJECT}/stack/rest/src/test/resources/log4j.properties /usr/share/tomcat7/lib/
 
 # build and deploy Usergrid Portal to Tomcat
-cd /home/vagrant/usergrid/portal
+npm install karma-phantomjs-launcher --save-dev
+
+cd ${USERGRID_PROJECT}/portal
 ./build.sh 
 cd dist
 mkdir /var/lib/tomcat7/webapps/portal
 cp -r usergrid-portal/* /var/lib/tomcat7/webapps/portal
-sed -i.bak "s/https\:\/\/api.usergrid.com/http\:\/\/${PUBLIC_HOSTNAME}:8080/" /var/lib/tomcat7/webapps/portal/config.js 
+sed -i.bak "s/http\:\/\/localhost/http\:\/\/${PUBLIC_HOSTNAME}/" /var/lib/tomcat7/webapps/portal/config.js 
 
 # go!
-/etc/init.d/tomcat7 restart
+/etc/init.d/tomcat7 start
+
+sleep 10
+
+# init usergrid
+curl -X PUT http://localhost:8080/system/database/setup -u superuser:test
+curl -X PUT http://localhost:8080/system/database/bootstrap -u superuser:test
+curl -X GET http://localhost:8080/system/superuser/setup -u superuser:test
