@@ -28,6 +28,8 @@ def usergridConfig = """
 # Minimal Usergrid configuration properties for local Tomcat and Cassandra 
 #
 
+usergrid.cluster_name=${clusterName}
+
 cassandra.url=${hostName}:9160
 cassanrda.cluster=${clusterName}
 cassandra.keyspace.strategy.options.replication_factor=1
