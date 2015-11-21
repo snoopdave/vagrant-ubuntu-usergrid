@@ -18,10 +18,9 @@
 
 # purge old Node.js, add repo for new Node.js
 apt-get purge nodejs npm
-apt-add-repository -y ppa:chris-lea/node.js
+curl -sL https://deb.nodesource.com/setup | sudo bash -
 
 # install what we need for building and running Usergrid Stack and Portal
-apt-get -y update
 apt-get -y install tomcat7 unzip git maven nodejs python-software-properties python g++ make
 /etc/init.d/tomcat7 stop
 
@@ -49,7 +48,7 @@ cat >> /usr/share/tomcat7/bin/setenv.sh << EOF
 export JAVA_OPTS="-Xmx512m -Dlog4j.configuration=file:///usr/share/tomcat7/lib/log4j.properties -Dlog4j.debug=false"
 EOF
 chmod +x /usr/share/tomcat7/bin/setenv.sh
-cp usergrid/stack/rest/src/test/resources/log4j.properties /usr/share/tomcat7/lib/
+cp /home/vagrant/usergrid/stack/rest/src/test/resources/log4j.properties /usr/share/tomcat7/lib/
 
 # build and deploy Usergrid Portal to Tomcat
 npm install karma-phantomjs-launcher --save-dev

@@ -94,14 +94,14 @@ usergrid.redirect_root=${baseUrl}/status
 
 usergrid.view.management.organizations.organization.activate=${baseUrl}/accounts/welcome
 usergrid.view.management.organizations.organization.confirm=${baseUrl}/accounts/welcome
-\n\
+
 usergrid.view.management.users.user.activate=${baseUrl}/accounts/welcome
 usergrid.view.management.users.user.confirm=${baseUrl}/accounts/welcome
 
 usergrid.admin.confirmation.url=${baseUrl}/management/users/%s/confirm
-usergrid.user.confirmation.url=${baseUrl}/%s/%s/users/%s/confirm\n\\n\
+usergrid.user.confirmation.url=${baseUrl}/%s/%s/users/%s/confirm
 
-usergrid.organization.activation.url=${baseUrl}/management/organizations/%s/activate\n\
+usergrid.organization.activation.url=${baseUrl}/management/organizations/%s/activate
 usergrid.admin.activation.url=${baseUrl}/management/users/%s/activate
 usergrid.user.activation.url=${baseUrl}%s/%s/users/%s/activate
 
