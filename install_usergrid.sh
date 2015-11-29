@@ -22,7 +22,7 @@ apt-add-repository -y ppa:chris-lea/node.js
 
 # install what we need for building and running Usergrid Stack and Portal
 apt-get -y update
-apt-get -y install tomcat7 unzip git maven nodejs python-software-properties python g++ make
+apt-get -y install tomcat7 unzip git maven nodejs npm python-software-properties python g++ make
 /etc/init.d/tomcat7 stop
 
 # this is necessary because the portal build still uses "node" in scripts
