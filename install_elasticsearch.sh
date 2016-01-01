@@ -31,9 +31,16 @@ MAX_OPEN_FILES=65535
 MAX_LOCKED_MEMORY=unlimited
 EOF
 
+cat >> /etc/elasticsearch/elasticsearch.yml << EOF
+cluster.name: elasticsearch
+EOF
+
 /etc/init.d/elasticsearch stop
 
 update-rc.d elasticsearch defaults 95 10
-groovy /vagrant/config_elasticsearch.groovy > /etc/elasticsearch/elasticsearch.yml
 
 /etc/init.d/elasticsearch start
+
+sleep 5
+
+curl -XPUT 'localhost:9200/_settings' -d '{"index" : { "number_of_replicas" : 0}}'

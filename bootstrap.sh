@@ -20,7 +20,7 @@ export PUBLIC_HOSTNAME=$1
 
 add-apt-repository -y ppa:openjdk-r/ppa
 apt-get update
-apt-get -y install vim curl openjdk-8-jdk groovy
+apt-get -y install vim curl openjdk-8-jdk 
 
 # ensure Java 8 is the default
 # see also: http://ubuntuhandbook.org/index.php/2015/01/install-openjdk-8-ubuntu-14-04-12-04-lts/

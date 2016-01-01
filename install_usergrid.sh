@@ -46,9 +46,78 @@ rm -rf /var/lib/tomcat7/webapps/*
 cp -r ROOT.war /var/lib/tomcat7/webapps
 mkdir -p /usr/share/tomcat7/lib 
 
+export superUserEmail=superuser@example.com
+export testAdminUserEmail=superuser@example.com
+export baseUrl=http://${PUBLIC_HOSTNAME}:8080
+
 # write Usergrid config
 cd /vagrant
-groovy config_usergrid.groovy > /usr/share/tomcat7/lib/usergrid-deployment.properties 
+cat >> /usr/share/tomcat7/lib/usergrid-deployment.properties << EOF
+
+usergrid.cluster_name=usergrid
+
+cassandra.url=${PUBLIC_HOSTNAME}:9160
+cassanrda.cluster=usergrid
+
+elasticsearch.cluster_name=elasticsearch
+elasticsearch.hosts=${PUBLIC_HOSTNAME}
+
+######################################################
+# Admin and test user setup
+
+usergrid.sysadmin.login.allowed=true
+usergrid.sysadmin.login.name=superuser
+usergrid.sysadmin.login.password=test
+usergrid.sysadmin.login.email=${superUserEmail}
+
+usergrid.sysadmin.email=${superUserEmail}
+usergrid.sysadmin.approve.users=true
+usergrid.sysadmin.approve.organizations=true
+
+# Base mailer account - default for all outgoing messages
+usergrid.management.mailer=Admin <${superUserEmail}>
+
+usergrid.setup-test-account=true
+
+usergrid.test-account.app=test-app
+usergrid.test-account.organization=test-organization
+usergrid.test-account.admin-user.username=test
+usergrid.test-account.admin-user.name=Test User
+usergrid.test-account.admin-user.email=${testAdminUserEmail}
+usergrid.test-account.admin-user.password=test
+
+######################################################
+# Auto-confirm and sign-up notifications settings
+
+usergrid.management.admin_users_require_confirmation=false
+usergrid.management.admin_users_require_activation=false
+
+usergrid.management.organizations_require_activation=false
+usergrid.management.notify_sysadmin_of_new_organizations=true
+usergrid.management.notify_sysadmin_of_new_admin_users=true
+
+######################################################
+# URLs
+
+# Redirect path when request come in for TLD
+usergrid.redirect_root=${baseUrl}/status
+
+usergrid.view.management.organizations.organization.activate=${baseUrl}/accounts/welcome
+usergrid.view.management.organizations.organization.confirm=${baseUrl}/accounts/welcome
+\n\
+usergrid.view.management.users.user.activate=${baseUrl}/accounts/welcome
+usergrid.view.management.users.user.confirm=${baseUrl}/accounts/welcome
+
+usergrid.admin.confirmation.url=${baseUrl}/management/users/%s/confirm
+usergrid.user.confirmation.url=${baseUrl}/%s/%s/users/%s/confirm\n\\n\
+
+usergrid.organization.activation.url=${baseUrl}/management/organizations/%s/activate\n\
+usergrid.admin.activation.url=${baseUrl}/management/users/%s/activate
+usergrid.user.activation.url=${baseUrl}%s/%s/users/%s/activate
+
+usergrid.admin.resetpw.url=${baseUrl}/management/users/%s/resetpw
+usergrid.user.resetpw.url=${baseUrl}/%s/%s/users/%s/resetpw
+EOF
 
 # configure Tomcat memory and and hook up Log4j because Usergrid uses it 
 cd /home/vagrant
