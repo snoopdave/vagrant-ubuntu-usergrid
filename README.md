@@ -1,11 +1,11 @@
-# VagrantFile that launches a Usergrid 1.x VM
+# VagrantFile that launches a Usergrid 2.x VM
 
 The VagrantFile in this directory starts a Virtual Machine (VM) that runs the 
 Usergrid Stack and Portal at [http://10.1.1.161:8080/portal](http://10.1.1.161:8080/portal) on your machine.
 
-It installs and starts Cassandra, installs and starts Tomcat, installs and 
+It installs and starts Cassandra + ElasticSearch, installs and starts Tomcat, installs and 
 configures Usergrid 1.0 Stack and Portal to run on Tomcat. 
-Usergrid is built from source code from the Usergrid *1.x* branch.
+Usergrid is built from source code from the Usergrid *master* branch.
 
 ## How to launch the VM
 
@@ -15,7 +15,6 @@ Usergrid is built from source code from the Usergrid *1.x* branch.
 4. Run this command to launch the Vagrant VM with Usergrid: *vagrant up*
 5. Wait 5-10 minutes for the installation to complete.
 
-
 ## How to access the Usergrid Portal
 
 Once the VM launches and completes initialization, you should be able to:
@@ -24,7 +23,7 @@ Once the VM launches and completes initialization, you should be able to:
 * Go to [http://10.1.1.161:8080/portal](http://10.1.1.161:8080/portal) to login to the Usergrid administration portal. You can login as *superuser* with password *test*. From there you can setup admin users and applications. 
 * Use the Usergrid API to interact with your Usergrid BaaS, the base URL for API calls is http://10.1.1.160:8080. 
 
-You can also use *vagrant ssh* to login to the VM and see the Usergrid installation. You'll find Java 1.7, Apache Cassandra, Tomcat and Usegrid installed. Three key parts of the Usergrid installation are:
+You can also use *vagrant ssh* to login to the VM and see the Usergrid installation. You'll find Java 1.8, Apache Cassandra, Tomcat and Usegrid installed. Three key parts of the Usergrid installation are:
 
 1. Usergrid properties file: /usr/share/tomcat7/lib/usergrid-custom.properties
 2. Usergrid WAR file: /var/lib/tomcat7/webapps/ROOT.war

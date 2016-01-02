@@ -16,57 +16,118 @@
 #
 #-------------------------------------------------------------------------------
 
-# purge old Node.js, add repo for new Node.js
+# Purge old Node.js, add repo for new Node.js
 apt-get purge nodejs npm
 apt-add-repository -y ppa:chris-lea/node.js
 
-# install what we need for building and running Usergrid Stack and Portal
+# Install what we need for building and running Usergrid Stack and Portal
 apt-get -y update
 apt-get -y install tomcat7 unzip git maven nodejs npm python-software-properties python g++ make
 /etc/init.d/tomcat7 stop
 
-# this is necessary because the portal build still uses "node" in scripts
-ln -s /usr/bin/nodejs /usr/bin/node
+# Deploy Usergrid stack and portal to Tomcat
+cd /vagrant/usergrid
 
-# fetch usergrid code in our home dir
-cd /home/vagrant
-git clone https://git-wip-us.apache.org/repos/asf/usergrid.git usergrid
-
-# build Usergrid stack, deploy it to Tomcat and then configure it
-cd usergrid/stack
-git checkout 1.x
-mvn -DskipTests=true install
-cp rest/src/test/resources/log4j.properties /usr/share/tomcat7/lib/
-cd rest/target
 rm -rf /var/lib/tomcat7/webapps/*
 cp -r ROOT.war /var/lib/tomcat7/webapps
-mkdir -p /usr/share/tomcat7/lib 
-cd /vagrant
-groovy config_usergrid.groovy > /usr/share/tomcat7/lib/usergrid-custom.properties 
 
-# configure Tomcat memory and and hook up Log4j because Usergrid uses it 
+mkdir -p /usr/share/tomcat7/lib 
+cp log4j.properties /usr/share/tomcat7/lib/
+
+# Write Usergrid config
+export superUserEmail=superuser@example.com
+export testAdminUserEmail=testadmin@example.com
+export baseUrl=http://${PUBLIC_HOSTNAME}:8080
+
+cd /vagrant
+cat >> /usr/share/tomcat7/lib/usergrid-deployment.properties << EOF
+
+usergrid.cluster_name=usergrid
+
+cassandra.url=${PUBLIC_HOSTNAME}:9160
+cassanrda.cluster=usergrid
+
+elasticsearch.cluster_name=elasticsearch
+elasticsearch.hosts=${PUBLIC_HOSTNAME}
+
+######################################################
+# Admin and test user setup
+
+usergrid.sysadmin.login.allowed=true
+usergrid.sysadmin.login.name=superuser
+usergrid.sysadmin.login.password=test
+usergrid.sysadmin.login.email=${superUserEmail}
+
+usergrid.sysadmin.email=${superUserEmail}
+usergrid.sysadmin.approve.users=true
+usergrid.sysadmin.approve.organizations=true
+
+# Base mailer account - default for all outgoing messages
+usergrid.management.mailer=Admin <${superUserEmail}>
+
+usergrid.setup-test-account=true
+
+usergrid.test-account.app=test-app
+usergrid.test-account.organization=test-organization
+usergrid.test-account.admin-user.username=test
+usergrid.test-account.admin-user.name=Test User
+usergrid.test-account.admin-user.email=${testAdminUserEmail}
+usergrid.test-account.admin-user.password=test
+
+######################################################
+# Auto-confirm and sign-up notifications settings
+
+usergrid.management.admin_users_require_confirmation=false
+usergrid.management.admin_users_require_activation=false
+
+usergrid.management.organizations_require_activation=false
+usergrid.management.notify_sysadmin_of_new_organizations=true
+usergrid.management.notify_sysadmin_of_new_admin_users=true
+
+######################################################
+# URLs
+
+# Redirect path when request come in for TLD
+usergrid.redirect_root=${baseUrl}/status
+
+usergrid.view.management.organizations.organization.activate=${baseUrl}/accounts/welcome
+usergrid.view.management.organizations.organization.confirm=${baseUrl}/accounts/welcome
+\n\
+usergrid.view.management.users.user.activate=${baseUrl}/accounts/welcome
+usergrid.view.management.users.user.confirm=${baseUrl}/accounts/welcome
+
+usergrid.admin.confirmation.url=${baseUrl}/management/users/%s/confirm
+usergrid.user.confirmation.url=${baseUrl}/%s/%s/users/%s/confirm\n\\n\
+
+usergrid.organization.activation.url=${baseUrl}/management/organizations/%s/activate\n\
+usergrid.admin.activation.url=${baseUrl}/management/users/%s/activate
+usergrid.user.activation.url=${baseUrl}%s/%s/users/%s/activate
+
+usergrid.admin.resetpw.url=${baseUrl}/management/users/%s/resetpw
+usergrid.user.resetpw.url=${baseUrl}/%s/%s/users/%s/resetpw
+EOF
+
+# Configure Tomcat memory and and hook up Log4j because Usergrid uses it 
+cd /home/vagrant
 cat >> /usr/share/tomcat7/bin/setenv.sh << EOF
-export JAVA_OPTS="-Xmx512m -Dlog4j.configuration=file:///usr/share/tomcat7/lib/log4j.properties -Dlog4j.debug=false"
+export JAVA_OPTS="-Xmx450m -Dlog4j.configuration=file:///usr/share/tomcat7/lib/log4j.properties -Dlog4j.debug=false"
 EOF
 chmod +x /usr/share/tomcat7/bin/setenv.sh
-cp usergrid/stack/rest/src/test/resources/log4j.properties /usr/share/tomcat7/lib/
 
-# build and deploy Usergrid Portal to Tomcat
+# Build and deploy Usergrid Portal to Tomcat
 npm install karma-phantomjs-launcher --save-dev
-
-cd /home/vagrant/usergrid/portal
-./build.sh 
-cd dist
-mkdir /var/lib/tomcat7/webapps/portal
-cp -r usergrid-portal/* /var/lib/tomcat7/webapps/portal
+cd /vagrant/usergrid
+tar xzvf usergrid-portal.tgz
+cp -r usergrid-portal /var/lib/tomcat7/webapps/portal
 sed -i.bak "s/http\:\/\/localhost/http\:\/\/${PUBLIC_HOSTNAME}/" /var/lib/tomcat7/webapps/portal/config.js 
+rm -rf usergrid-portal
 
-# go!
+# GO!
 /etc/init.d/tomcat7 start
 
 sleep 10
 
-# init usergrid
-curl http://localhost:8080/system/database/setup -u superuser:test
-curl http://localhost:8080/system/superuser/setup -u superuser:test
-
+# Init usergrid
+curl -X PUT http://localhost:8080/system/database/setup -u superuser:test
+curl -X PUT http://localhost:8080/system/database/bootstrap -u superuser:test
+curl -X GET http://localhost:8080/system/superuser/setup -u superuser:test

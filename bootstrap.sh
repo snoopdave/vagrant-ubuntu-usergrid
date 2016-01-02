@@ -18,21 +18,19 @@
 
 export PUBLIC_HOSTNAME=$1
 
+add-apt-repository -y ppa:openjdk-r/ppa
 apt-get update
+apt-get -y install vim curl openjdk-8-jdk 
 
-# install essential stuff
-apt-get -y install vim curl groovy
-
-# install Java 7 and set it as default Java
-# http://askubuntu.com/questions/121654/how-to-set-default-java-version
-apt-get -y install openjdk-7-jdk
-sudo update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/java-1.7.0-openjdk-amd64/bin/java" 1
+# ensure Java 8 is the default
+# see also: http://ubuntuhandbook.org/index.php/2015/01/install-openjdk-8-ubuntu-14-04-12-04-lts/
+update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java" 1
 echo "1" | sudo update-alternatives --config java
 
 # create a startup file for all shells
 cat >/etc/profile.d/usergrid-env.sh <<EOF
 alias sudo='sudo -E'
-export JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-amd64/jre
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
 export PUBLIC_HOSTNAME=$PUBLIC_HOSTNAME
 EOF
 
@@ -40,5 +38,7 @@ EOF
 source /etc/profile.d/usergrid-env.sh 
 
 pushd /vagrant
+chmod +x *.sh
 ./install_cassandra.sh
+./install_elasticsearch.sh
 ./install_usergrid.sh
