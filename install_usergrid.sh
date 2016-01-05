@@ -16,13 +16,15 @@
 #
 #-------------------------------------------------------------------------------
 
-# Purge old Node.js, add repo for new Node.js
-apt-get purge nodejs npm
-apt-add-repository -y ppa:chris-lea/node.js
+echo " "
+echo "--------------------------------------------------------------------------"
+echo "Installing Usergrid"
+echo "--------------------------------------------------------------------------"
+echo " "
 
 # Install what we need for building and running Usergrid Stack and Portal
 apt-get -y update
-apt-get -y install tomcat7 unzip git maven nodejs npm python-software-properties python g++ make
+apt-get -y install tomcat7 
 /etc/init.d/tomcat7 stop
 
 # Deploy Usergrid stack and portal to Tomcat
@@ -33,6 +35,20 @@ cp -r ROOT.war /var/lib/tomcat7/webapps
 
 mkdir -p /usr/share/tomcat7/lib 
 cp log4j.properties /usr/share/tomcat7/lib/
+
+# Configure Tomcat memory and and hook up Log4j because Usergrid uses it 
+cd /home/vagrant
+cat >> /usr/share/tomcat7/bin/setenv.sh << EOF
+export JAVA_OPTS="-Xmx450m -Dlog4j.configuration=file:///usr/share/tomcat7/lib/log4j.properties -Dlog4j.debug=false"
+EOF
+chmod +x /usr/share/tomcat7/bin/setenv.sh
+
+# Build and deploy Usergrid Portal to Tomcat
+cd /vagrant/usergrid
+tar xzvf usergrid-portal.tgz
+cp -r usergrid-portal /var/lib/tomcat7/webapps/portal
+sed -i.bak "s/http\:\/\/localhost/http\:\/\/${PUBLIC_HOSTNAME}/" /var/lib/tomcat7/webapps/portal/config.js 
+rm -rf usergrid-portal
 
 # Write Usergrid config
 export superUserEmail=superuser@example.com
@@ -97,9 +113,8 @@ usergrid.view.management.users.user.activate=${baseUrl}/accounts/welcome
 usergrid.view.management.users.user.confirm=${baseUrl}/accounts/welcome
 
 usergrid.admin.confirmation.url=${baseUrl}/management/users/%s/confirm
-usergrid.user.confirmation.url=${baseUrl}/%s/%s/users/%s/confirm\n\\n\
-
-usergrid.organization.activation.url=${baseUrl}/management/organizations/%s/activate\n\
+usergrid.user.confirmation.url=${baseUrl}/%s/%s/users/%s/confirm
+usergrid.organization.activation.url=${baseUrl}/management/organizations/%s/activate
 usergrid.admin.activation.url=${baseUrl}/management/users/%s/activate
 usergrid.user.activation.url=${baseUrl}%s/%s/users/%s/activate
 
@@ -107,20 +122,7 @@ usergrid.admin.resetpw.url=${baseUrl}/management/users/%s/resetpw
 usergrid.user.resetpw.url=${baseUrl}/%s/%s/users/%s/resetpw
 EOF
 
-# Configure Tomcat memory and and hook up Log4j because Usergrid uses it 
-cd /home/vagrant
-cat >> /usr/share/tomcat7/bin/setenv.sh << EOF
-export JAVA_OPTS="-Xmx450m -Dlog4j.configuration=file:///usr/share/tomcat7/lib/log4j.properties -Dlog4j.debug=false"
-EOF
-chmod +x /usr/share/tomcat7/bin/setenv.sh
 
-# Build and deploy Usergrid Portal to Tomcat
-npm install karma-phantomjs-launcher --save-dev
-cd /vagrant/usergrid
-tar xzvf usergrid-portal.tgz
-cp -r usergrid-portal /var/lib/tomcat7/webapps/portal
-sed -i.bak "s/http\:\/\/localhost/http\:\/\/${PUBLIC_HOSTNAME}/" /var/lib/tomcat7/webapps/portal/config.js 
-rm -rf usergrid-portal
 
 # GO!
 /etc/init.d/tomcat7 start

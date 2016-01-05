@@ -16,6 +16,12 @@
 #
 #-------------------------------------------------------------------------------
 
+echo " "
+echo "--------------------------------------------------------------------------"
+echo "Installing Cassandra"
+echo "--------------------------------------------------------------------------"
+echo " "
+
 # install and stop Cassandra
 cat >> /etc/apt/sources.list.d/cassandra.sources.list << EOF
 deb http://www.apache.org/dist/cassandra/debian 12x main

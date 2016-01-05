@@ -16,7 +16,14 @@
 #
 #-------------------------------------------------------------------------------
 
+# VagrantFile passes in hostname as argument 1
 export PUBLIC_HOSTNAME=$1
+
+echo " "
+echo "--------------------------------------------------------------------------"
+echo "Installing OpenJDK"
+echo "--------------------------------------------------------------------------"
+echo " "
 
 add-apt-repository -y ppa:openjdk-r/ppa
 apt-get update
@@ -39,6 +46,8 @@ source /etc/profile.d/usergrid-env.sh
 
 pushd /vagrant
 chmod +x *.sh
+
 ./install_cassandra.sh
 ./install_elasticsearch.sh
 ./install_usergrid.sh
+

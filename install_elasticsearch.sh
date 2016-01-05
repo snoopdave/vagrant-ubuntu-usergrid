@@ -16,6 +16,12 @@
 #
 #-------------------------------------------------------------------------------
 
+echo " "
+echo "--------------------------------------------------------------------------"
+echo "Installing ElasticSearch"
+echo "--------------------------------------------------------------------------"
+echo " "
+
 wget -O - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | apt-key add -
 
 cd /etc/apt/sources.list.d
@@ -43,4 +49,6 @@ update-rc.d elasticsearch defaults 95 10
 
 sleep 5
 
+# setup for single node usage
 curl -XPUT 'localhost:9200/_settings' -d '{"index" : { "number_of_replicas" : 0}}'
+
