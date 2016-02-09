@@ -43,10 +43,10 @@ export JAVA_OPTS="-Xmx450m -Dlog4j.configuration=file:///usr/share/tomcat7/lib/l
 EOF
 chmod +x /usr/share/tomcat7/bin/setenv.sh
 
-# Build and deploy Usergrid Portal to Tomcat
+# Deploy Usergrid Portal to Tomcat
 cd /vagrant/usergrid
-tar xzvf usergrid-portal.tgz
-cp -r usergrid-portal /var/lib/tomcat7/webapps/portal
+tar xzvf usergrid-portal.tar.gz
+cp -r usergrid-portal.2.0.18 /var/lib/tomcat7/webapps/portal
 sed -i.bak "s/http\:\/\/localhost/http\:\/\/${PUBLIC_HOSTNAME}/" /var/lib/tomcat7/webapps/portal/config.js 
 rm -rf usergrid-portal
 
@@ -108,7 +108,7 @@ usergrid.redirect_root=${baseUrl}/status
 
 usergrid.view.management.organizations.organization.activate=${baseUrl}/accounts/welcome
 usergrid.view.management.organizations.organization.confirm=${baseUrl}/accounts/welcome
-\n\
+
 usergrid.view.management.users.user.activate=${baseUrl}/accounts/welcome
 usergrid.view.management.users.user.confirm=${baseUrl}/accounts/welcome
 
