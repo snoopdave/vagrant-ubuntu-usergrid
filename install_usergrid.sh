@@ -48,7 +48,7 @@ cd /vagrant/usergrid
 tar xzvf usergrid-portal.tar.gz
 cp -r usergrid-portal.2.0.18 /var/lib/tomcat7/webapps/portal
 sed -i.bak "s/http\:\/\/localhost/http\:\/\/${PUBLIC_HOSTNAME}/" /var/lib/tomcat7/webapps/portal/config.js 
-rm -rf usergrid-portal
+rm -rf usergrid-portal.2.0.18
 
 # Write Usergrid config
 export superUserEmail=superuser@example.com
