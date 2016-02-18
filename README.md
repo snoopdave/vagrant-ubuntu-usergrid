@@ -1,4 +1,4 @@
-# VagrantFile that launches a Usergrid 2.1.0 RC2 VM
+# VagrantFile that launches a Usergrid 2.1.0 VM
 
 The VagrantFile in this directory starts a Virtual Machine (VM) that runs the 
 Usergrid Stack and Portal at [http://10.1.1.161:8080/portal](http://10.1.1.161:8080/portal) on your machine.
