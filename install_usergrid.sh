@@ -16,22 +16,37 @@
 #
 #-------------------------------------------------------------------------------
 
+# bootstrap.sh passes in usergrid version as argument 1
+USERGRID_VERSION=$1
+USERGRID_MIRROR="http://www.us.apache.org/dist/usergrid/usergrid-2/v$USERGRID_VERSION/"
+USERGRID_DIST="apache-usergrid-$USERGRID_VERSION-binary.tar.gz"
+USERGRID_DIR="apache-usergrid-$USERGRID_VERSION"
+USERGRID_DOWNLOAD="$USERGRID_MIRROR$USERGRID_DIST"
+
 echo " "
 echo "--------------------------------------------------------------------------"
-echo "Installing Usergrid"
+echo "Installing Usergrid $USERGRID_VERSION"
 echo "--------------------------------------------------------------------------"
 echo " "
 
 # Install what we need for building and running Usergrid Stack and Portal
-apt-get -y update
+apt-get -y -qq update
 apt-get -y install tomcat7 
 /etc/init.d/tomcat7 stop
+
+# Download Usergrid binary distribution
+cd /vagrant/usergrid
+echo "Downloading Usergrid $USERGRID_DOWNLOAD"
+wget -c -q -o /dev/null $USERGRID_DOWNLOAD
+rm -rf $USERGRID_DIR
+mkdir -p $USERGRID_DIR
+tar xzvf $USERGRID_DIST -C $USERGRID_DIR --strip-components=1
 
 # Deploy Usergrid stack and portal to Tomcat
 cd /vagrant/usergrid
 
 rm -rf /var/lib/tomcat7/webapps/*
-cp -r ROOT.war /var/lib/tomcat7/webapps
+cp -r $USERGRID_DIR/stack/ROOT.war /var/lib/tomcat7/webapps
 
 mkdir -p /usr/share/tomcat7/lib 
 cp log4j.properties /usr/share/tomcat7/lib/
@@ -45,10 +60,8 @@ chmod +x /usr/share/tomcat7/bin/setenv.sh
 
 # Deploy Usergrid Portal to Tomcat
 cd /vagrant/usergrid
-tar xzvf usergrid-portal.tar.gz
-cp -r usergrid-portal.2.0.18 /var/lib/tomcat7/webapps/portal
+cp -r $USERGRID_DIR/portal /var/lib/tomcat7/webapps/portal
 sed -i.bak "s/http\:\/\/localhost/http\:\/\/${PUBLIC_HOSTNAME}/" /var/lib/tomcat7/webapps/portal/config.js 
-rm -rf usergrid-portal.2.0.18
 
 # Write Usergrid config
 export superUserEmail=superuser@example.com

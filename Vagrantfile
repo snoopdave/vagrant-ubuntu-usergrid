@@ -17,6 +17,8 @@
 #
 #-------------------------------------------------------------------------------
 
+USERGRID_VERSION = "2.1.0"
+
 Vagrant.configure(2) do |config|
 
     config.vm.box = "trusty64"
@@ -32,7 +34,7 @@ Vagrant.configure(2) do |config|
         ug.vm.host_name = "ug"
         ug.vm.network "private_network", ip: "10.1.1.161"
         ug.vm.provision :shell, 
-           inline: "/vagrant/bootstrap.sh \"10.1.1.161\" " 
+           inline: "/vagrant/bootstrap.sh \"10.1.1.161\" \"#{USERGRID_VERSION}\"" 
     end
 
 end

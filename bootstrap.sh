@@ -16,8 +16,9 @@
 #
 #-------------------------------------------------------------------------------
 
-# VagrantFile passes in hostname as argument 1
+# VagrantFile passes in hostname as argument 1 and usergrid version as argument 2
 export PUBLIC_HOSTNAME=$1
+USERGRID_VERSION=$2
 
 echo " "
 echo "--------------------------------------------------------------------------"
@@ -27,7 +28,7 @@ echo " "
 
 apt-get -y install software-properties-common
 add-apt-repository -y ppa:openjdk-r/ppa
-apt-get update
+apt-get -qq update
 apt-get -y install vim curl openjdk-8-jdk 
 
 # ensure Java 8 is the default
@@ -50,5 +51,5 @@ chmod +x *.sh
 
 ./install_cassandra.sh
 ./install_elasticsearch.sh
-./install_usergrid.sh
+./install_usergrid.sh $USERGRID_VERSION
 
