@@ -75,8 +75,8 @@ usergrid.sysadmin.login.password=test
 usergrid.sysadmin.login.email=${superUserEmail}
 
 usergrid.sysadmin.email=${superUserEmail}
-usergrid.sysadmin.approve.users=true
-usergrid.sysadmin.approve.organizations=true
+usergrid.sysadmin.approve.users=false
+usergrid.sysadmin.approve.organizations=false
 
 # Base mailer account - default for all outgoing messages
 usergrid.management.mailer=Admin <${superUserEmail}>
@@ -97,8 +97,8 @@ usergrid.management.admin_users_require_confirmation=false
 usergrid.management.admin_users_require_activation=false
 
 usergrid.management.organizations_require_activation=false
-usergrid.management.notify_sysadmin_of_new_organizations=true
-usergrid.management.notify_sysadmin_of_new_admin_users=true
+usergrid.management.notify_sysadmin_of_new_organizations=false
+usergrid.management.notify_sysadmin_of_new_admin_users=false
 
 ######################################################
 # URLs
