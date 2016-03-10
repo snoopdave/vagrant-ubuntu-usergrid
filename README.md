@@ -12,7 +12,7 @@ It installs and starts Cassandra + ElasticSearch, installs and starts Tomcat, in
 1. Install [Vagrant](https://www.vagrantup.com/) on your computer
 2. Clone the GitHub [usergrid-vagrant](https://github.com/snoopdave/usergrid-vagrant) repo
 3. cd into the usergrid-vagrant directory
-4. Run this command to launch the Vagrant VM with Usergrid: *vagrant up*
+4. Run this command to launch the Vagrant VM with Usergrid: *vagrant up --provider virtualbox*
 5. Wait 5-10 minutes for the installation to complete.
 
 ## How to access the Usergrid Portal

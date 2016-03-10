@@ -1,3 +1,4 @@
 /nbproject/*
 .vagrant/*
 /vagrant.log
+usergrid/apache-usergrid-*
