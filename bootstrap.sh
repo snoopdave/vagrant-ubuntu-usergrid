@@ -25,9 +25,10 @@ echo "Installing OpenJDK"
 echo "--------------------------------------------------------------------------"
 echo " "
 
+apt-get -y install software-properties-common
 add-apt-repository -y ppa:openjdk-r/ppa
 apt-get update
-apt-get -y install vim curl openjdk-8-jdk 
+apt-get -y install vim curl openjdk-8-jdk
 
 # ensure Java 8 is the default
 # see also: http://ubuntuhandbook.org/index.php/2015/01/install-openjdk-8-ubuntu-14-04-12-04-lts/
@@ -42,7 +43,7 @@ export PUBLIC_HOSTNAME=$PUBLIC_HOSTNAME
 EOF
 
 # setup login environment
-source /etc/profile.d/usergrid-env.sh 
+source /etc/profile.d/usergrid-env.sh
 
 pushd /vagrant
 chmod +x *.sh
