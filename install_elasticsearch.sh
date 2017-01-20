@@ -22,13 +22,6 @@ echo "Installing ElasticSearch"
 echo "--------------------------------------------------------------------------"
 echo " "
 
-wget -O - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | apt-key add -
-
-cd /etc/apt/sources.list.d
-cat >> elasticsearch.sources.list << EOF
-deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main
-EOF
-apt-get update
 apt-get --force-yes -y install elasticsearch
 
 cat >> /etc/default/elasticsearch << EOF
