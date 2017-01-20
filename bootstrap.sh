@@ -26,6 +26,8 @@ echo "--------------------------------------------------------------------------
 echo " "
 
 #repo for Java
+apt-get update
+apt-get install software-properties-common
 add-apt-repository -y ppa:openjdk-r/ppa
 
 #Add gpg key for cassandra source list
