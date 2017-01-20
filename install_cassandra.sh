@@ -22,11 +22,8 @@ echo "Installing Cassandra"
 echo "--------------------------------------------------------------------------"
 echo " "
 
+#apt-get update
 # install and stop Cassandra
-cat >> /etc/apt/sources.list.d/cassandra.sources.list << EOF
-deb http://www.apache.org/dist/cassandra/debian 12x main
-EOF
-apt-get update
 apt-get --force-yes -y install libcap2
 apt-get --force-yes -y install cassandra
 /etc/init.d/cassandra stop
