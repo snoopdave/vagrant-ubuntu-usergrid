@@ -23,7 +23,7 @@ echo "--------------------------------------------------------------------------
 echo " "
 
 # Install what we need for building and running Usergrid Stack and Portal
-apt-get -y update
+#apt-get -y update
 apt-get -y install tomcat7 
 /etc/init.d/tomcat7 stop
 
