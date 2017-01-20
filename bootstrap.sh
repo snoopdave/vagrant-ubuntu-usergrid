@@ -26,6 +26,16 @@ echo "--------------------------------------------------------------------------
 echo " "
 
 #repo for Java
+mv /etc/apt/sources.list /etc/apt/sources.list.old
+cd /etc/apt/
+cat >> sources.list << EOF
+deb http://kambing.ui.ac.id/ubuntu/ trusty main restricted universe multiverse
+deb http://kambing.ui.ac.id/ubuntu/ trusty-updates main restricted universe multiverse
+deb http://kambing.ui.ac.id/ubuntu/ trusty-security main restricted universe multiverse
+deb http://kambing.ui.ac.id/ubuntu/ trusty-backports main restricted universe multiverse
+deb http://kambing.ui.ac.id/ubuntu/ trusty-proposed main restricted universe multiverse
+EOF
+
 apt-get update
 apt-get install software-properties-common
 add-apt-repository -y ppa:openjdk-r/ppa
