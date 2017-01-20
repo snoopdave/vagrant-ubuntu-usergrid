@@ -25,7 +25,24 @@ echo "Installing OpenJDK"
 echo "--------------------------------------------------------------------------"
 echo " "
 
+#repo for Java
 add-apt-repository -y ppa:openjdk-r/ppa
+
+#Add gpg key for cassandra source list
+gpg --keyserver keyserver.ubuntu.com --recv-keys 749D6EEC0353B12C
+sudo apt-key add ~/.gnupg/pubring.gpg
+#repo for cassandra
+cat >> /etc/apt/sources.list.d/cassandra.sources.list << EOF
+deb http://www.apache.org/dist/cassandra/debian 12x main
+EOF
+
+#repo for Elasticsearch
+wget -O - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | apt-key add -
+cd /etc/apt/sources.list.d
+cat >> elasticsearch.sources.list << EOF
+deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main
+EOF
+
 apt-get update
 apt-get -y install vim curl openjdk-8-jdk 
 
