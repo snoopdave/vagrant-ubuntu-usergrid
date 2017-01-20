@@ -31,6 +31,9 @@ add-apt-repository -y ppa:openjdk-r/ppa
 #Add gpg key for cassandra source list
 gpg --keyserver keyserver.ubuntu.com --recv-keys 749D6EEC0353B12C
 sudo apt-key add ~/.gnupg/pubring.gpg
+
+gpg --keyserver keyserver.ubuntu.com --recv-keys 7F438280EF8D349F
+sudo apt-key add ~/.gnupg/pubring.gpg
 #repo for cassandra
 cat >> /etc/apt/sources.list.d/cassandra.sources.list << EOF
 deb http://www.apache.org/dist/cassandra/debian 12x main
