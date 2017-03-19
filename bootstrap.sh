@@ -44,6 +44,7 @@ add-apt-repository -y ppa:openjdk-r/ppa
 cat >> /etc/apt/sources.list.d/cassandra.sources.list << EOF
 deb http://www.apache.org/dist/cassandra/debian 12x main
 EOF
+apt-get update
 
 #repo for Elasticsearch
 wget -O - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | apt-key add -
@@ -51,6 +52,7 @@ cd /etc/apt/sources.list.d
 cat >> elasticsearch.sources.list << EOF
 deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main
 EOF
+apt-get update
 
 #Add gpg key for cassandra source list
 gpg --keyserver keyserver.ubuntu.com --recv-keys 749D6EEC0353B12C
