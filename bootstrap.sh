@@ -37,7 +37,7 @@ deb http://kambing.ui.ac.id/ubuntu/ trusty-proposed main restricted universe mul
 EOF
 
 apt-get update
-apt-get install -y software-properties-common
+apt-get -y install software-properties-common
 add-apt-repository -y ppa:openjdk-r/ppa
 
 #repo for cassandra
