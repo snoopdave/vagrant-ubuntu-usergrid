@@ -36,9 +36,17 @@ deb http://kambing.ui.ac.id/ubuntu/ trusty-backports main restricted universe mu
 deb http://kambing.ui.ac.id/ubuntu/ trusty-proposed main restricted universe multiverse
 EOF
 
+
 apt-get update
 apt-get -y install software-properties-common
 add-apt-repository -y ppa:openjdk-r/ppa
+
+#Add gpg key for cassandra source list
+gpg --keyserver keyserver.ubuntu.com --recv-keys 749D6EEC0353B12C
+sudo apt-key add ~/.gnupg/pubring.gpg
+
+gpg --keyserver keyserver.ubuntu.com --recv-keys 7F438280EF8D349F
+sudo apt-key add ~/.gnupg/pubring.gpg
 
 #repo for cassandra
 cat >> /etc/apt/sources.list.d/cassandra.sources.list << EOF
@@ -48,6 +56,38 @@ apt-get update
 
 #repo for Elasticsearch
 wget -O - http://packages.elasticsearch.org/GPG-KEY-elasticsearch | apt-key add -
+cd /etc/apt/sources.list.d
+cat >> elasticsearch.sources.list << EOF
+deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main
+EOF
+#apt-get update
+
+apt-get update
+apt-get -y install vim curl openjdk-8-jdk 
+
+# ensure Java 8 is the default
+# see also: http://ubuntuhandbook.org/index.php/2015/01/install-openjdk-8-ubuntu-14-04-12-04-lts/
+update-alternatives --install "/usr/bin/java" "java" "/usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java" 1
+echo "1" | sudo update-alternatives --config java
+
+# create a startup file for all shells
+cat >/etc/profile.d/usergrid-env.sh <<EOF
+alias sudo='sudo -E'
+export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/jre
+export PUBLIC_HOSTNAME=$PUBLIC_HOSTNAME
+EOF
+
+# setup login environment
+source /etc/profile.d/usergrid-env.sh 
+
+pushd /vagrant
+chmod +x *.sh
+
+./install_cassandra.sh
+./install_elasticsearch.sh
+./install_usergrid.sh
+
+
 cd /etc/apt/sources.list.d
 cat >> elasticsearch.sources.list << EOF
 deb http://packages.elasticsearch.org/elasticsearch/1.4/debian stable main
