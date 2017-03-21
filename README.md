@@ -21,6 +21,8 @@ It installs and starts Cassandra + ElasticSearch, installs and starts Tomcat, in
 Once the VM launches and completes initialization, you should be able to:
 
 * Go to [http://10.1.1.161:8080/status](http://10.1.1.161:8080/status) to view the Usergrid status page.
+Usergrid status at [http://10.1.1.161:8080/status](http://10.1.1.161:8080/status) should show for cassandra "cassandraAvailable" : true, "cassandraStatus" : "GREEN" and for elasticsearch "managementAppIndexStatus" : "YELLOW".
+
 * Go to [http://10.1.1.161:8080/portal](http://10.1.1.161:8080/portal) to login to the Usergrid administration portal. You can login as *superuser* with password *test*. From there you can setup admin users and applications. 
 * Use the Usergrid API to interact with your Usergrid BaaS, the base URL for API calls is http://10.1.1.160:8080. 
 
