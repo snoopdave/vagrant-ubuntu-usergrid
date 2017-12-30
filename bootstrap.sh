@@ -25,6 +25,7 @@ echo "Installing OpenJDK"
 echo "--------------------------------------------------------------------------"
 echo " "
 
+apt-get -y install software-properties-common # install add-apt-repository
 add-apt-repository -y ppa:openjdk-r/ppa
 apt-get update
 apt-get -y install vim curl openjdk-8-jdk 
